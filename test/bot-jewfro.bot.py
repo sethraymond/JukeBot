@@ -2,7 +2,7 @@ import discord
 import asyncio
 
 tokenFile = open("../tokens/bots/bot-jewfro", "r")
-token = tokenFile.readline()
+token = tokenFile.readline().strip()
 
 client = discord.Client()
 
@@ -15,7 +15,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('!test'):
+    if message.content.startswith('&test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
         async for log in client.logs_from(message.channel, limit=100):
@@ -23,7 +23,7 @@ async def on_message(message):
                 counter += 1
 
         await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
+    elif message.content.startswith('&sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 
