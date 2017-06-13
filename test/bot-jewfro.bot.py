@@ -1,10 +1,17 @@
 import discord
 import asyncio
+from gmusicapi import Mobileclient
+import getpass
 
-tokenFile = open("../tokens/bots/bot-jewfro", "r")
-token = tokenFile.readline().strip()
-
-client = discord.Client()
+def gpm_login():
+    email = input('Please enter an email address tied to a GPM account: ')
+    pw = getpass.getpass('Please enter the password associated with %s: ' % email)
+    logged_in = api.login(email, pw, Mobileclient.FROM_MAC_ADDRESS) #per api protocol
+    if logged_in:
+        print('Login successful!')
+    else:
+        print('Login failed! Please try again.')
+    return logged_in
 
 @client.event
 async def on_ready():
@@ -27,4 +34,11 @@ async def on_message(message):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 
+tokenFile = open("../tokens/bots/.discord-bot-token", "r")
+token = tokenFile.readline().strip()
+
+client = discord.Client()
+api = Mobileclient()
+while not gpm_login():
+    pass
 client.run(token)
