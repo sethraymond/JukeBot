@@ -1,7 +1,8 @@
 import discord
 import asyncio
+from libs.gmusic import GpmSession
 
-tokenFile = open("../tokens/bots/botrumz", "r")
+tokenFile = open("../tokens/bots/botrumz.token", "r")
 token = tokenFile.readline().strip()
 
 client = discord.Client()
@@ -26,5 +27,9 @@ async def on_message(message):
     elif message.content.startswith('~sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
+
+session = GpmSession()
+while not session.logged_in:
+    session = GpmSession()
 
 client.run(token)
