@@ -1,17 +1,8 @@
 import discord
 import asyncio
-from gmusicapi import Mobileclient
-import getpass
+from libs.gmusic import GpmSession
 
-def gpm_login():
-    email = input('Please enter an email address tied to a GPM account: ')
-    pw = getpass.getpass('Please enter the password associated with %s: ' % email)
-    logged_in = api.login(email, pw, Mobileclient.FROM_MAC_ADDRESS) #per api protocol
-    if logged_in:
-        print('Login successful!')
-    else:
-        print('Login failed! Please try again.')
-    return logged_in
+client = discord.Client()
 
 @client.event
 async def on_ready():
@@ -22,6 +13,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    global voicech
     if message.content.startswith('&test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
@@ -33,12 +25,22 @@ async def on_message(message):
     elif message.content.startswith('&sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
+    elif message.content.startswith('&joinvoice'):
+        all_channels = list(client.get_all_channels())
+        for ch in all_channels:
+            if str(ch) == 'dev' and ch.type == discord.ChannelType.voice:
+                voicech = ch
+        print(str(voicech), voicech.type)
+        voice = client.join_voice_channel(voicech)
+    elif message.content.startswith('&leavevoice'):
+        pass
+    elif message.content.startswith('&isvoiceconnected'):
+        pass
 
 tokenFile = open("../tokens/bots/.discord-bot-token", "r")
 token = tokenFile.readline().strip()
 
-client = discord.Client()
-api = Mobileclient()
-while not gpm_login():
-    pass
+#session = GpmSession()
+#while not session.logged_in:
+#    session = GpmSession()
 client.run(token)
