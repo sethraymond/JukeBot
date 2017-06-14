@@ -7,6 +7,8 @@ class GpmSession(object):
     # Public Variables
     api = None
     logged_in = False
+    songs = None
+    playlists = None
 
     def __init__(self):
         self.api = Mobileclient()
@@ -18,8 +20,40 @@ class GpmSession(object):
         else:
             print("Login failed")
 
+    def init(self, songs = True, playlists = True):
+        if songs:
+            self.songs = self.api.get_all_songs()
+        if playlists:
+            self.playlists = self.api.get_all_playlists()
+
+    def get_song(self, title, artist=None):
+        if not self.songs:
+            self.init(True, False)
+        song = next(iter((track for track in self.songs if self._filter_condition(track, title, artist)) or []), None)
+        if song:
+            return song
+            # return self.api.get_stream_url(song["id"])
+        else:
+            return None
+
+
+    def _filter_condition(self, song_obj, search_title, search_artist):
+        result = True
+        if search_title:
+            result = result & (song_obj["title"] == search_title)
+        if search_artist:
+            result = result & (song_obj["artist"] == search_artist)
+        return result
+
 def main():
-    print("main does nothing")
+    session = GpmSession()
+    while not session.logged_in:
+        session = GpmSession()
+    session.init()
+    # print(next(iter(session.songs or []), None)["id"])
+    # print(session.get_song("Dirty Laundry", "Bitter Sweet"))
+    # print(session.get_song("1940"))
+    print(session.api.get_registered_devices())
 
 if __name__ == "__main__":
     main()
