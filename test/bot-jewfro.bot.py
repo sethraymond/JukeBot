@@ -14,6 +14,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     global voicech
+    global voice
     if message.content.startswith('&test'):
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
@@ -31,11 +32,13 @@ async def on_message(message):
             if str(ch) == 'dev' and ch.type == discord.ChannelType.voice:
                 voicech = ch
         print(str(voicech), voicech.type)
-        voice = client.join_voice_channel(voicech)
+        voice = await client.join_voice_channel(voicech)
+        voice.connect()
     elif message.content.startswith('&leavevoice'):
-        pass
+        await voice.disconnect()
     elif message.content.startswith('&isvoiceconnected'):
-        pass
+        status = voice.is_connected() 
+        print(status)
 
 tokenFile = open("../tokens/bots/.discord-bot-token", "r")
 token = tokenFile.readline().strip()
