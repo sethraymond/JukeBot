@@ -31,8 +31,7 @@ class GpmSession(object):
             self.init(True, False)
         song = next(iter((track for track in self.songs if self._filter_condition(track, title, artist)) or []), None)
         if song:
-            return song
-            # return self.api.get_stream_url(song["id"])
+            return self.api.get_stream_url(song["id"])
         else:
             return None
 
@@ -50,10 +49,8 @@ def main():
     while not session.logged_in:
         session = GpmSession()
     session.init()
-    # print(next(iter(session.songs or []), None)["id"])
-    # print(session.get_song("Dirty Laundry", "Bitter Sweet"))
-    # print(session.get_song("1940"))
-    print(session.api.get_registered_devices())
+    print(session.get_song("Dirty Laundry", "Bitter Sweet"))
+    print(session.get_song("1940"))
 
 if __name__ == "__main__":
     main()
