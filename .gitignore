@@ -2,3 +2,5 @@
 tokens/
 */__pycache__/
 *.pyc
+*.secret.json
+secrets/*

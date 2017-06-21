@@ -10,15 +10,18 @@ class GpmSession(object):
     songs = None
     playlists = None
 
-    def __init__(self):
+    # Constructor with optionally passed credentials
+    # Omit credentials if you want to handle login, include for prompts from this module
+    def __init__(self, email=None, pw=None):
         self.api = Mobileclient()
-        email = input("Please enter an email address tied to a GPM account: ")
-        pw = getpass.getpass("Please enter the password associated with %s " % email)
+        if not email and not pw == None:
+            email = input("Please enter an email address tied to a GPM account: ")
+            pw = getpass.getpass("Please enter the password associated with %s " % email)
         self.logged_in = self.api.login(email, pw, Mobileclient.FROM_MAC_ADDRESS) # As per api protocol
         if self.logged_in:
-            print("Login successful")
+            print("Google Play Music login successful")
         else:
-            print("Login failed")
+            print("Google Play Music login failed")
 
     def init(self, songs = True, playlists = True):
         if songs:
@@ -26,7 +29,8 @@ class GpmSession(object):
         if playlists:
             self.playlists = self.api.get_all_playlists()
 
-    def get_song(self, title, artist=None):
+    def get_song_stream(self, title, artist=None):
+        print(not self.songs)
         if not self.songs:
             self.init(True, False)
         song = next(iter((track for track in self.songs if self._filter_condition(track, title, artist)) or []), None)
@@ -39,9 +43,9 @@ class GpmSession(object):
     def _filter_condition(self, song_obj, search_title, search_artist):
         result = True
         if search_title:
-            result = result & (song_obj["title"] == search_title)
+            result = result & (song_obj["title"].lower().strip() == search_title.lower().strip())
         if search_artist:
-            result = result & (song_obj["artist"] == search_artist)
+            result = result & (song_obj["artist"].lower().strip() == search_artist.lower().strip())
         return result
 
 def main():
@@ -49,8 +53,8 @@ def main():
     while not session.logged_in:
         session = GpmSession()
     session.init()
-    print(session.get_song("Dirty Laundry", "Bitter Sweet"))
-    print(session.get_song("1940"))
+    print(session.get_song_stream("Dirty Laundry", "Bitter Sweet"))
+    print(session.get_song_stream("1940"))
 
 if __name__ == "__main__":
     main()
