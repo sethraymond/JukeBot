@@ -4,3 +4,4 @@ tokens/
 *.pyc
 *.secret.json
 secrets/*
+*.swp
