@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 import discord
 import asyncio
+import json
 from libs.gmusic import GpmSession
 
-tokenFile = open("../tokens/bots/botrumz.token", "r")
-token = tokenFile.readline().strip()
+with open("../secrets/botrumz.secret.json", "r") as secretsFile:
+    secrets = json.load(secretsFile)
 
 client = discord.Client()
 
@@ -29,8 +30,22 @@ async def on_message(message):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 
-session = GpmSession()
+    elif message.content.startswith("~findurl"):
+        titleSearch = None
+        artistSearch = None
+        searchTerms = message.content.split("~")
+        if len(searchTerms) > 2:
+            titleSearch = searchTerms[2]
+        if len(searchTerms) > 3:
+            artistSearch = searchTerms[3]
+        url = session.get_song_stream(titleSearch, artistSearch)
+        if not url:
+            await client.send_message(message.channel, "NOTFOUND")
+        else:
+            await client.send_message(message.channel, url)
+
+session = GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
 while not session.logged_in:
     session = GpmSession()
 
-client.run(token)
+client.run(secrets["botToken"])
