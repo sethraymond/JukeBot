@@ -1,8 +1,13 @@
 import discord
 import asyncio
+import json
 from libs.gmusic import GpmSession
 
+with open("../secrets/bot-jewfro.secret.json", "r") as secrets_file:
+    secrets = json.load(secrets_file)
+
 client = discord.Client()
+
 
 @client.event
 async def on_ready():
@@ -16,30 +21,32 @@ async def on_message(message):
     global voicech
     global voice
     global player
-    if message.content.startswith('&test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
 
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('&sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
-    elif message.content.startswith('&joinvoice'):
+    if message.content.startswith('&joinvoice'):
+        voicech = message.content.split(' ')[1]
         all_channels = list(client.get_all_channels())
-        for ch in all_channels:
-            if str(ch) == 'dev' and ch.type == discord.ChannelType.voice:
+        for ch in all_channels: #TODO: if no arg, make bot look to see where user currently is
+            if str(ch) == voicech and ch.type == discord.ChannelType.voice:
                 voicech = ch
         print(str(voicech), voicech.type)
         voice = await client.join_voice_channel(voicech)
         voice.connect()
     elif message.content.startswith('&newsong'):
-        player.stop()
-        song = str(message.content.split(' ')[1])
-        player = await voice.create_ytdl_player(song, use_avconv=True)
-        player.start()
+        title_search = None
+        artist_search = None
+        search_terms = message.content.split('&')
+        if len(search_terms) > 2:
+            title_search = search_terms[2]
+        if len(search_terms) > 3:
+            artist_search = search_terms[3]
+        url = session.get_song_stream(title_search, artist_search)
+        if not url:
+            await client.send_message(message.channel, "Song ain't found, yo.")
+        else:
+            #requires user to run `export PATH=$PATH:/usr/bin/avconv` or wherever avconv is installed
+            player = await voice.create_ytdl_player(url, use_avconv=True) 
+            player.volume = 0.1
+            player.start()
     elif message.content.startswith('&stop'):
         player.stop()
     elif message.content.startswith('&leavevoice'):
@@ -55,10 +62,7 @@ async def on_message(message):
         status = voice.is_connected() 
         print(status)
 
-tokenFile = open("../tokens/bots/.discord-bot-token", "r")
-token = tokenFile.readline().strip()
-
-#session = GpmSession()
-#while not session.logged_in:
-#    session = GpmSession()
-client.run(token)
+session = GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
+while not session.logged_in:
+    session = GpmSession()
+client.run(secrets["botToken"])
