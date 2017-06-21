@@ -34,8 +34,18 @@ async def on_message(message):
         print(str(voicech), voicech.type)
         voice = await client.join_voice_channel(voicech)
         voice.connect()
+        mp3 = 'John Shaftman - Story!.mp3'
+        player = voice.create_ffmpeg_player(mp3, use_avconv=True)
+        player.volume = 0.25
+        player.start()
+        print(player.is_playing())
+        player.resume()
     elif message.content.startswith('&leavevoice'):
         await voice.disconnect()
+    elif message.content.startswith('&pause'):
+        player.pause()
+    elif message.content.startswith('&resume'):
+        player.resume()
     elif message.content.startswith('&isvoiceconnected'):
         status = voice.is_connected() 
         print(status)
