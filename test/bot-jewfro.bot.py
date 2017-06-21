@@ -28,7 +28,6 @@ async def on_message(message):
         for ch in all_channels: #TODO: if no arg, make bot look to see where user currently is
             if str(ch) == voicech and ch.type == discord.ChannelType.voice:
                 voicech = ch
-        print(str(voicech), voicech.type)
         voice = await client.join_voice_channel(voicech)
         voice.connect()
     elif message.content.startswith('&newsong'):
@@ -60,7 +59,7 @@ async def on_message(message):
         player.volume = vol
     elif message.content.startswith('&isvoiceconnected'):
         status = voice.is_connected() 
-        print(status)
+		await client.send_message(message.channel, "I am connected to a voice channel!") #TODO: have it print the voice channel it is connected to
 
 session = GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
 while not session.logged_in:

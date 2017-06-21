@@ -1,1 +1,39 @@
 This is JukeBot!
+
+This bot requires >= Python 3.5.1. You will probably need root access for a
+majority of these commands.
+
+Get the repository for Python 3.5.x if you don't have it:
+$ add-apt-repository ppa:fkrull/deadsnakes
+$ apt-get update
+
+$ apt-get install python3.5 python3.5-dev
+$ apt-get install python3-pip
+
+avconv is required for this project, you can get it through libav-tools:
+
+$ apt-get install libav-tools
+$ export PATH=$PATH:/usr/bin/avconv
+
+Check your symbolic links in /usr/bin to see if python3 points to an older
+version of python3 (like python3.4.x).
+
+$ ls /usr/bin/ *python3*
+
+If necessary... USE WITH EXTREME CAUTION. WE TAKE NO RESPONSIBILITY IF THIS HAS
+ADVERSE CONSEQUENCES!
+
+$ sudo rm python3
+$ sudo ln -s python3 python3.5
+
+
+Now that we have pip, we can start cruising.
+
+$ pip3 install --upgrade pip
+$ pip3 install gmusicapi
+$ pip3 install youtube-dl
+
+discord.py developers recommend calling python3 directly for their pip
+installation:
+
+$ python3 -m pip install -U discord.py[voice]
