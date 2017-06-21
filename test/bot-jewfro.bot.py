@@ -59,7 +59,7 @@ async def on_message(message):
         player.volume = vol
     elif message.content.startswith('&isvoiceconnected'):
         status = voice.is_connected() 
-		await client.send_message(message.channel, "I am connected to a voice channel!") #TODO: have it print the voice channel it is connected to
+        await client.send_message(message.channel, "I am connected to a voice channel!") #TODO: have it print the voice channel it is connected to
 
 session = GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
 while not session.logged_in:
