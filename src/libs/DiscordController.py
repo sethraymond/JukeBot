@@ -8,18 +8,14 @@ _command_callback = None
 client = discord.Client()
 discord_connected = False
 
-def discord_init():
-    # self._command_callback = command_callback if command_callback else self._default_callback
-    # if (command_callback):
-    #     self._command_callback = command_callback
-    # else:
-    #     self
+def _default_callback(command="", args=[], source=None):
     pass
 
-
-
-def _default_callback(self, command="", args=[], source=None):
-    pass
+def discord_init(secrets, command_callback=None):
+    global _bot_name
+    # _bot_name = secrets["botName"]
+    _bot_name = "JukeBot"
+    _command_callback = command_callback if command_callback else _default_callback
 
 def run_discord(bot_token):
     client.run(bot_token)
@@ -31,4 +27,18 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message.content)
+    if message.author.name == _bot_name:
+        return
+    callee = function_possibilities.get(message.content)
+    if not callee:
+        await client.send_message(message.channel, "I can't do that, " + message.author.name)
+    else:
+        await callee(message)
+
+async def test(message):
+    await client.send_message(message.channel, "I am test and I heard: " + message.content)
+
+# function_possibilities = None
+function_possibilities = globals().copy()
+function_possibilities.update(locals())
+
