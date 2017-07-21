@@ -9,8 +9,9 @@ with open("../secrets/JukeBot.secret.json", "r") as secretsFile:
 
 discord_init(secrets)
 
-gpm = GPMController.GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
-while not gpm.logged_in:
-    gpm = GPMController.GpmSession()
+# Commented this out to speed up testing (and not logging out is effing with my play account)
+# gpm = GPMController.GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
+# while not gpm.logged_in:
+#     gpm = GPMController.GpmSession()
 
 run_discord(secrets["botToken"])
