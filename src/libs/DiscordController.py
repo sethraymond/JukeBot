@@ -14,14 +14,15 @@ _flag_and_contents = re.compile('^(\w+)\W*(.*)')
 client = discord.Client()
 discord_connected = False
 
-def _default_callback(command="", args=[], source=None):
+# Will be used if calling bot does not give a callback - commands will do nothing
+def _default_callback(parsed_message):
     pass
 
 def discord_init(secrets, command_callback=None):
     global _bot_name
     # Get name of bot so we can ignore messages it sends
     _bot_name = secrets["botName"] # "JukeBot"
-    # Currently not in use
+    # Register callback to calling bot
     _command_callback = command_callback if command_callback else _default_callback
 
 # Start the discord client THIS IS BLOCKING!!!
@@ -41,16 +42,12 @@ async def on_message(message):
     if message.author.name == _bot_name:
         return
 
-    # callee = function_possibilities.get(message.content)
-    # if not callee:
-    #     await client.send_message(message.channel, "I can't do that, " + message.author.name)
-    # else:
-    #     await callee(message)
-    print(_parse_message(message.content))
+    # Parse message for command and flags
+    parsed_message = _parse_message(message.content)
 
-# Dummy test function
-async def test(message):
-    await client.send_message(message.channel, "I am test and I heard: " + message.content)
+    # Send message back to calling bot
+    print(_command_callback)
+    await _command_callback(parsed_message)
 
 # Test if message meets the criteria for a command
 def _is_command(message_content):
@@ -76,6 +73,3 @@ def _parse_message(message_content):
                 parsed_message["flags"][i-1]["contents"] = match.group(2)
 
     return parsed_message
-
-function_possibilities = globals().copy()
-function_possibilities.update(locals())
