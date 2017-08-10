@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-import json
-import asyncio
-from libs.DiscordController import *
-import libs.GooglePlayMusicController as GPMController
 
 # DYNAMIC FUNCTIONS START HERE
 
@@ -13,6 +9,11 @@ async def test(options):
 # These MUST be after the dynamic functions
 function_possibilities = globals().copy()
 function_possibilities.update(locals())
+
+import json
+import asyncio
+from libs.DiscordController import *
+import libs.GooglePlayMusicController as GPMController
 
 # Load secrets
 with open("../secrets/JukeBot.secret.json", "r") as secretsFile:

@@ -20,6 +20,7 @@ def _default_callback(parsed_message):
 
 def discord_init(secrets, command_callback=None):
     global _bot_name
+    global _command_callback
     # Get name of bot so we can ignore messages it sends
     _bot_name = secrets["botName"] # "JukeBot"
     # Register callback to calling bot
@@ -46,7 +47,6 @@ async def on_message(message):
     parsed_message = _parse_message(message.content)
 
     # Send message back to calling bot
-    print(_command_callback)
     await _command_callback(parsed_message)
 
 # Test if message meets the criteria for a command
