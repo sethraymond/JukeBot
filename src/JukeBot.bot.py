@@ -35,6 +35,17 @@ async def getsong(options):
         url = gpm.api.get_stream_url(song_id)
         print(song_title, song_artist, song_album)
 
+async def joinvoice(options):
+    channel_name = None
+    for option in options:
+        if option["flag"] == "channel":
+            channel_name = option["contents"]
+    if channel_name:
+        await join_discord_voice(channel_name)
+
+async def leavevoice(options):
+    await leave_discord_voice()
+
 # DYNAMIC FUNCTIONS END HERE
 # These MUST be after the dynamic functions
 function_possibilities = globals().copy()

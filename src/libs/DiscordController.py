@@ -76,3 +76,22 @@ def _parse_message(message_content):
 
 async def respond(original_message, newMessageContents):
     await client.send_message(original_message.channel, newMessageContents)
+
+async def join_discord_voice(channel_name):
+    global _voice_channel
+    channel = None
+    all_channels = list(client.get_all_channels())
+    for ch in all_channels:
+        if str(ch) == channel_name and ch.type == discord.ChannelType.voice:
+            channel = ch
+            break
+
+    if channel:
+        _voice_channel = await client.join_voice_channel(channel)
+        await _voice_channel.connect()
+
+async def leave_discord_voice():
+    global _voice_channel
+    if _voice_channel:
+        print("disconnecting")
+        await _voice_channel.disconnect()
