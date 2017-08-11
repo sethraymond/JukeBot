@@ -37,9 +37,12 @@ discord_init(secrets, _discord_callback)
 gpm = GPMController.GpmSession(secrets["gPlayAppUser"], secrets["gPlayAppPass"])
 while not gpm.logged_in:
     gpm = GPMController.GpmSession()
-song = gpm.search_store("Hello", "Walk off the Earth")
-song_id = gpm.add_song_to_library(song)
-url = gpm.api.get_stream_url(song_id)
+if not gpm.api.is_subscribed:
+    print("A subscription is recommended for full functionality of this bot.")
+else:
+    song = gpm.search_store("Hello", "Walk off the Earth")
+    song_id = gpm.add_song_to_library(song)
+    url = gpm.api.get_stream_url(song_id)
 
 # Blocking, run last
 run_discord(secrets["botToken"])
