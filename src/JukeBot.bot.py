@@ -25,7 +25,8 @@ async def _discord_callback(parsed_message):
     callee = function_possibilities.get(parsed_message["command"])
     if not callee:
         # Function not found: complain to user
-        await client.send_message(message.channel, "I can't do " + parsed_message["command"] + ", " + message.author.name)
+        # await client.send_message(message.channel, "I can't do " + parsed_message["command"] + ", " + message.author.name)
+        pass
     else:
         # Function found: call it with the command flags
         await callee(parsed_message["flags"])
