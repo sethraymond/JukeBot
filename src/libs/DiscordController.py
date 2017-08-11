@@ -15,7 +15,7 @@ client = discord.Client()
 discord_connected = False
 
 # Will be used if calling bot does not give a callback - commands will do nothing
-def _default_callback(parsed_message):
+def _default_callback(parsed_message, original_message):
     pass
 
 def discord_init(secrets, command_callback=None):
@@ -47,7 +47,7 @@ async def on_message(message):
     parsed_message = _parse_message(message.content)
 
     # Send message back to calling bot
-    await _command_callback(parsed_message)
+    await _command_callback(parsed_message, message)
 
 # Test if message meets the criteria for a command
 def _is_command(message_content):
@@ -73,3 +73,6 @@ def _parse_message(message_content):
                 parsed_message["flags"][i-1]["contents"] = match.group(2)
 
     return parsed_message
+
+async def respond(original_message, newMessageContents):
+    await client.send_message(original_message.channel, newMessageContents)

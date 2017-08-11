@@ -20,13 +20,12 @@ with open("../secrets/JukeBot.secret.json", "r") as secretsFile:
     secrets = json.load(secretsFile)
 
 # Callback for DiscordController so this bot can execute commands entered in chat
-async def _discord_callback(parsed_message):
+async def _discord_callback(parsed_message, original_message):
     # Attempt to find function in this file with a name that matches the command
     callee = function_possibilities.get(parsed_message["command"])
     if not callee:
         # Function not found: complain to user
-        # await client.send_message(message.channel, "I can't do " + parsed_message["command"] + ", " + message.author.name)
-        pass
+        await respond(original_message, "I can't do " + parsed_message["command"] + ", " + original_message.author.name)
     else:
         # Function found: call it with the command flags
         await callee(parsed_message["flags"])
