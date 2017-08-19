@@ -47,7 +47,8 @@ async def on_message(message):
     parsed_message = _parse_message(message.content)
 
     # Send message back to calling bot
-    await _command_callback(parsed_message, message)
+    if _is_command(message.content):
+        await _command_callback(parsed_message, message)
 
 # Test if message meets the criteria for a command
 def _is_command(message_content):

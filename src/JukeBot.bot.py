@@ -40,6 +40,7 @@ async def joinvoice(options):
     for option in options:
         if option["flag"] == "channel":
             channel_name = option["contents"]
+            break
     if channel_name:
         await join_discord_voice(channel_name)
 
